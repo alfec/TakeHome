@@ -1,0 +1,408 @@
+{
+	"info": {
+		"_postman_id": "09e62d5c-6eda-4595-bfa2-e5fd935c4aa1",
+		"name": "Take-Home test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "10959022",
+		"_collection_link": "https://orange-water-364396.postman.co/workspace/TakeHome~34d4f4a6-d1e9-46be-ae85-c7bab0de8017/collection/10959022-09e62d5c-6eda-4595-bfa2-e5fd935c4aa1?action=share&source=collection_link&creator=10959022"
+	},
+	"item": [
+		{
+			"name": "CreateUser",
+			"item": [
+				{
+					"name": "CreateNewUser",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json();\r",
+									"const body = JSON.parse(pm.variables.get(\"bodyData\"));\r",
+									"if(body.email === \"john@email.com\"){\r",
+									"    const schema = {\r",
+									"        \"message\": \"string\",\r",
+									"        \"authorization\": \"string\",\r",
+									"    }\r",
+									"\r",
+									"    pm.test(\"Status code is 200 - pm.response\",  () => {\r",
+									"        pm.response.to.have.status(200);\r",
+									"    });\r",
+									"\r",
+									"    pm.test(\"Validate the Json schema\", () => {\r",
+									"        pm.expect(pm.response.json()).to.have.jsonSchema(schema)\r",
+									"    });\r",
+									"}else{\r",
+									"    pm.test(\"Status code is 400 - pm.response\",  () => {\r",
+									"        pm.response.to.have.status(400);\r",
+									"    });\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"data\": {\r\n    \"name\": \"John Doe\",\r\n    \"email\": \"john@email.com\",\r\n    \"phone_number\": \"+1555000000\",\r\n    \"street_address\": \"Main St\",\r\n    \"country\": \"US\",\r\n    \"state\": \"NY\",\r\n    \"city\": \"New York\",\r\n    \"zip_code\": \"10001\"\r\n  }\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/auth/local/register",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"local",
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Login",
+			"item": [
+				{
+					"name": "PostLogin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json();\r",
+									"const schema = {\r",
+									"    \"jwt\": \"string\",\r",
+									"    \"user\": {\r",
+									"        \"id\" : \"int\",\r",
+									"        \"username\" : \"string\",\r",
+									"        \"email\" : \"string\",\r",
+									"        \"provider\" : \"string\",\r",
+									"        \"confirmed\" : \"boolean\",\r",
+									"        \"blocked\" : \"boolean\",\r",
+									"        \"name\" : \"string\",\r",
+									"        \"createdAt\" : \"string\",\r",
+									"        \"updatedAt\" : \"string\",\r",
+									"    },\r",
+									"}\r",
+									"\r",
+									"pm.test(\"Status code is 200 - pm.response\",  () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Validate the Json schema\", () => {\r",
+									"    pm.expect(pm.response.json()).to.have.jsonSchema(schema)\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"pm.test(\"Successful POST request\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"identifier\": \"test1\",\r\n  \"password\": \"Test1234\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/auth/local",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"auth",
+								"local"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NegativeLogin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404 - pm.response\",  () => {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"identifier\": \"test1\",\r\n  \"password\": \"Test1234\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/auth/local",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"auth",
+								"local"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NegativePostLogin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404 - pm.response\",  () => {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"identifier\": \"test1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/auth/local",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"auth",
+								"local"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NegativePostLogin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404 - pm.response\",  () => {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"password\": \"Test1234\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/auth/local",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"auth",
+								"local"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Banners",
+			"item": [
+				{
+					"name": "CreateNewBanner",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"password\": \"Test1234\"\r\n}"
+						},
+						"url": {
+							"raw": "{{baseURL}}/banners",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"banners"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "findBanner",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseURL}}/banners",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"banners"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateBanner",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    {\r\n        \"id\": 2,\r\n        \"url\": \"https://www.google.com/search?q=father+shoes&sca_esv=80cf78a8a12ad65b&hl=pt-BR&authuser=0&sxsrf=AE3TifNajXSVUXdlsDSI6aqO74mbUTNSxg:1764830687119&source=hp&biw=1857&bih=993&ei=3y0xabzvBOHa5OUP0dq16Qg&iflsig=AOw8s4IAAAAAaTE772HbxpWAqCHjMJzq35cW0lffEENh&ved=0ahUKEwj82sTRqqORAxVhLbkGHVFtLY0Q4dUDCBc&uact=5&oq=father+shoes&gs_lp=EgNpbWciDGZhdGhlciBzaG9lczIHECMYJxjJAjIHEAAYgAQYEzIGEAAYExgeMgYQABgTGB4yBhAAGBMYHjIGEAAYExgeMgYQABgTGB4yCBAAGBMYChgeMggQABgTGAUYHjIIEAAYExgFGB5ImTBQxwxYxi5wBXgAkAEAmAGxAaAB5g-qAQQwLjE2uAEDyAEA-AEBigILZ3dzLXdpei1pbWeYAhWgAv4QqAIKwgIKECMYJxjJAhjqAsICCxAAGIAEGLEDGIMBwgIOEAAYgAQYsQMYgwEYigXCAggQABiABBixA8ICBRAAGIAEwgIHEAAYgAQYCsICCRAAGIAEGBMYCsICCRAAGIAEGAoYC8ICBBAAGB7CAgoQABgTGAUYChgemAMNkgcENS4xNqAHtGuyBwQwLjE2uAfVEMIHBjItMTkuMsgHeA&sclient=img&udm=2\"\r\n    }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/banners",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"banners"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Brand",
+			"item": [
+				{
+					"name": "CreateBrand",
+					"request": {
+						"method": "POST",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "FindBrand",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": ""
+		}
+	]
+}
